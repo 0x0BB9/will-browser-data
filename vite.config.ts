@@ -10,6 +10,7 @@ import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: './', // 关键配置！强制所有资源路径为相对路径
   resolve: {
     alias: {
       '~/': `${path.resolve(__dirname, 'src')}/`,
