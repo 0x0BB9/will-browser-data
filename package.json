@@ -5,6 +5,7 @@
   "private": true,
   "packageManager": "pnpm@9.15.0",
   "license": "MIT",
+  "homepage": "https://0x0bb9.github.io/will-browser-data",
   "repository": {
     "url": "https://github.com/0x0BB9/will-browser-data"
   },
@@ -15,7 +16,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "vue-tsc --noEmit",
-    "deploy": "master -d dist"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
