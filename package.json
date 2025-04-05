@@ -6,7 +6,7 @@
   "packageManager": "pnpm@9.15.0",
   "license": "MIT",
   "repository": {
-    "url": "https://github.com/element-plus/element-plus-vite-starter"
+    "url": "https://github.com/0x0BB9/will-browser-data"
   },
   "scripts": {
     "dev": "vite",

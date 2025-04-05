@@ -23,7 +23,7 @@ import { toggleDark } from '~/composables'
     </el-menu-item>
 
     <el-menu-item h="full" disabled>
-      <a class="size-full flex items-center justify-center" :href="repository.url" target="_blank">
+      <a class="size-full flex items-center justify-center" target="_blank">
         <div i-ri-github-fill />
       </a>
     </el-menu-item>
