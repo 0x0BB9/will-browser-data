@@ -1,52 +1,88 @@
+<!-- eslint-disable style/brace-style -->
+<!-- eslint-disable style/indent -->
 <script setup lang="ts">
+import browser from 'browser-tool'
 import { ElMessage } from 'element-plus'
-import { ref } from 'vue'
 
-var browser = require("browser-tool");
+import { onMounted, ref } from 'vue'
 
 defineProps<{ msg: string }>()
 
-const tableData = [
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-04',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-01',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-]
+// 定义 loading 状态和 networkInfo 数据
+const loading = ref(true)
+const info = ref<any>(null)
+const fingerPrint = ref<any>(null)
+
+// 页面初始化时加载 networkInfo
+onMounted(async () => {
+  try {
+    info.value = await browser.getInfo()
+
+    // 浏览器各项综合特征指纹
+    fingerPrint.value = await browser.getFingerprint()
+  } catch (error) {
+    ElMessage.error('加载网络信息失败')
+    console.error(error)
+  } finally {
+    loading.value = false
+  }
+  // eslint-disable-next-line vue/block-tag-newline
+})
+
 </script>
 
 <template>
-  <h1 color="$ep-color-primary">
-    {{ msg }}
-  </h1>
+  <div v-if="loading" class="center-container">
+    加载中...
+  </div>
+  <div v-else class="center-container">
+    <div v-if="info">
+      <h2>
+        浏览器详细信息
+      </h2>
+      <el-table :data="Object.entries(info)" border style="width: 100%">
+        <el-table-column prop="0" label="Key" width="180" align="right">
+          <template #default="{ row }">
+            <div class="key-column" color="$ep-color-primary">
+              {{ row[0] }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="1" label="Value" />
+      </el-table>
 
-  <el-table :data="tableData" border style="width: 100%">
-    <el-table-column prop="name" label="Type" width="180" />
-    <el-table-column prop="address" label="Value" />
-  </el-table>
+      <h2>
+        浏览器指纹
+      </h2>
+      <el-table :data="Object.entries(fingerPrint)" border style="width: 100%">
+        <el-table-column prop="0" label="Key" width="180" align="right">
+          <template #default="{ row }">
+            <div class="key-column" color="$ep-color-primary">
+              {{ row[0] }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="1" label="Value" />
+      </el-table>
+    </div>
+  </div>
 </template>
 
-<style>
-.ep-button {
-  margin: 4px;
+<style lang="scss" scoped>
+.center-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; /* 使容器占满屏幕高度 */
+  text-align: center;
 }
-.ep-button + .ep-button {
-  margin-left: 0;
-  margin: 4px;
+
+.el-table {
+  margin-top: 20px;
+}
+/* Key 列样式 */
+.key-column {
+  font-weight: bold; /* 字体加粗 */
 }
 </style>
