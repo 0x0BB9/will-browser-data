@@ -1,6 +1,7 @@
 <!-- eslint-disable style/brace-style -->
 <!-- eslint-disable style/indent -->
 <script setup lang="ts">
+import { getFingerprint } from '@thumbmarkjs/thumbmarkjs'
 import browser from 'browser-tool'
 import { ElMessage } from 'element-plus'
 
@@ -12,6 +13,7 @@ defineProps<{ msg: string }>()
 const loading = ref(true)
 const info = ref<any>(null)
 const fingerPrint = ref<any>(null)
+const fingerPrint2 = ref<any>(null)
 
 // 页面初始化时加载 networkInfo
 onMounted(async () => {
@@ -20,6 +22,9 @@ onMounted(async () => {
 
     // 浏览器各项综合特征指纹
     fingerPrint.value = await browser.getFingerprint()
+
+    getFingerprint().then((fpFromTheumbmark) => { fingerPrint2.value = fpFromTheumbmark })
+    // 通过 thumbmarkjs 获取浏览器指纹
   } catch (error) {
     ElMessage.error('加载网络信息失败')
     console.error(error)
@@ -64,6 +69,11 @@ onMounted(async () => {
         </el-table-column>
         <el-table-column prop="1" label="Value" />
       </el-table>
+
+      <h2>
+        浏览器指纹 by thumbmarkjs
+      </h2>
+      <div>{{ fingerPrint2 }}</div>
     </div>
   </div>
 </template>
@@ -74,15 +84,19 @@ onMounted(async () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh; /* 使容器占满屏幕高度 */
+  min-height: 100vh;
+  /* 使容器占满屏幕高度 */
   text-align: center;
+  padding-bottom: 60px;
 }
 
 .el-table {
   margin-top: 20px;
 }
+
 /* Key 列样式 */
 .key-column {
-  font-weight: bold; /* 字体加粗 */
+  font-weight: bold;
+  /* 字体加粗 */
 }
 </style>
