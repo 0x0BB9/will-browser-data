@@ -7,7 +7,9 @@ interface SignalRow {
   key: string
   label: string
   value: string
+  confidence?: string
   hint?: string
+  method?: string
 }
 
 interface SignalGroup {
@@ -65,6 +67,32 @@ const fieldHints: Record<string, string> = {
   timezone: '适合与 IP 国家、语言联合做一致性校验。',
 }
 
+const fieldMeta: Record<string, { confidence: string, method: string }> = {
+  browser: { confidence: '高', method: 'User-Agent 解析' },
+  browserVersion: { confidence: '高', method: 'User-Agent 解析' },
+  engine: { confidence: '中', method: 'User-Agent 解析' },
+  isWebview: { confidence: '中', method: 'User-Agent / 容器特征' },
+  isRobot: { confidence: '中', method: 'User-Agent / 规则识别' },
+  cookieEnabled: { confidence: '高', method: 'navigator.cookieEnabled' },
+  userAgent: { confidence: '高', method: 'navigator.userAgent' },
+  system: { confidence: '中', method: 'User-Agent 解析' },
+  systemVersion: { confidence: '中', method: 'User-Agent 解析' },
+  platform: { confidence: '高', method: 'navigator.platform' },
+  architecture: { confidence: '中', method: 'User-Agent / UA-CH 推断' },
+  device: { confidence: '中', method: 'User-Agent / 触控特征推断' },
+  devicePixelRatio: { confidence: '高', method: 'window.devicePixelRatio' },
+  screenWidth: { confidence: '高', method: 'screen.width' },
+  screenHeight: { confidence: '高', method: 'screen.height' },
+  clientWidth: { confidence: '高', method: 'document.documentElement.clientWidth' },
+  clientHeight: { confidence: '高', method: 'document.documentElement.clientHeight' },
+  screenColorDepth: { confidence: '高', method: 'screen.colorDepth' },
+  screenPixelDepth: { confidence: '高', method: 'screen.pixelDepth' },
+  isTouch: { confidence: '中', method: 'navigator.maxTouchPoints' },
+  isOnline: { confidence: '中', method: 'navigator.onLine' },
+  language: { confidence: '高', method: 'navigator.language' },
+  timezone: { confidence: '高', method: 'Intl.DateTimeFormat' },
+}
+
 function formatValue(value: unknown) {
   if (value === null || value === undefined || value === '')
     return 'N/A'
@@ -117,7 +145,9 @@ function createRows(keys: string[]) {
       key,
       label: fieldLabels[key] ?? key,
       value: formatValue(filtered[key]),
+      confidence: fieldMeta[key]?.confidence,
       hint: fieldHints[key],
+      method: fieldMeta[key]?.method,
     }))
 }
 
@@ -326,7 +356,23 @@ onMounted(async () => {
             >
               <div class="signal-meta">
                 <span class="signal-label">{{ row.label }}</span>
-                <code class="signal-key">{{ row.key }}</code>
+                <div class="signal-subline">
+                  <code class="signal-key">{{ row.key }}</code>
+                  <span
+                    v-if="row.confidence"
+                    class="signal-meta-text"
+                    :title="`可信度：${row.confidence}`"
+                  >
+                    {{ row.confidence }}可信
+                  </span>
+                  <span
+                    v-if="row.method"
+                    class="signal-meta-text signal-meta-method"
+                    :title="`获取方式：${row.method}`"
+                  >
+                    {{ row.method }}
+                  </span>
+                </div>
                 <p v-if="row.hint" class="signal-hint">
                   {{ row.hint }}
                 </p>
@@ -610,6 +656,14 @@ onMounted(async () => {
   min-width: 0;
 }
 
+.signal-subline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
 .signal-label {
   display: block;
   font-weight: 700;
@@ -618,7 +672,27 @@ onMounted(async () => {
 
 .signal-key {
   display: inline-block;
-  margin-top: 6px;
+  font-size: 12px;
+}
+
+.signal-meta-text {
+  position: relative;
+  color: #7a8ca0;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.signal-meta-text::before {
+  content: '·';
+  margin-right: 8px;
+  color: #b0bfce;
+}
+
+.signal-meta-method {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .signal-hint {
