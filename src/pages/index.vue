@@ -1,3 +1,3 @@
 <template>
-  <Table msg="Hello World" />
+  <Table />
 </template>

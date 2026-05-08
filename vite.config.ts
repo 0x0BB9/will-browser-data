@@ -26,6 +26,12 @@ export default defineConfig({
     },
   },
 
+  server: {
+    host: true, // 等同于 '0.0.0.0'，监听所有网卡
+    port: 3000, // 可选：指定端口
+    strictPort: true, // 若端口被占用，则报错退出
+  },
+
   plugins: [
     Vue(),
 

@@ -1,6 +1,3 @@
-import type { UserModule } from './types'
-import { ViteSSG } from 'vite-ssg'
-
 // import "~/styles/element/index.scss";
 
 // import ElementPlus from "element-plus";
@@ -9,20 +6,20 @@ import { ViteSSG } from 'vite-ssg'
 
 // or use cdn, uncomment cdn link in `index.html`
 
+import { createApp } from 'vue'
+/* eslint-disable import/no-duplicates */
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { routes } from 'vue-router/auto-routes'
+/* eslint-enable import/no-duplicates */
 import App from './App.vue'
 
 import '~/styles/index.scss'
-
-import 'uno.css'
 // If you want to use ElMessage, import it.
 import 'element-plus/theme-chalk/src/message.scss'
 import 'element-plus/theme-chalk/src/message-box.scss'
+import 'uno.css'
 
 // if you do not need ssg:
-import { createApp } from 'vue';
-
 const app = createApp(App)
 app.use(createRouter({
   history: createWebHashHistory(),
